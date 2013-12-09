@@ -432,7 +432,7 @@ int send_message(int handle,
     }
 
     // Free request message buffer
-    // delete_message(message);
+    free(message);
 
     // Receive response message header
     if (tcp_read(&msg_header, MSG_HEADER_SIZE) == 0)
@@ -448,7 +448,7 @@ int send_message(int handle,
     if (msg_header.payload_length > 0)
     {
         // Allocate memory for payload buffer
-        payload = malloc(msg_header.payload_length);
+        payload = malloc(msg_header.payload_length + 1);
         if (payload == NULL)
         {
             perror("Error: malloc() failed");
@@ -460,6 +460,7 @@ int send_message(int handle,
         {
             printf("Server closed connection2\n");
             close(server_socket);
+            free(payload);
             exit(-1);
         }
 
@@ -468,6 +469,8 @@ int send_message(int handle,
             // Extract value from response message
             decode_value(payload, msg_header.payload_length, type, get_value);
         }
+
+        free(payload);
 
         if (msg_header.type == RSP_ERROR)
         {
@@ -561,6 +564,7 @@ int handle_incoming_message(int server_socket)
     {
         printf("Client closed connection\n");
         close(client_socket);
+        free(payload);
         exit(-1);
     }
 
@@ -762,6 +766,9 @@ int handle_incoming_message(int server_socket)
          default:
             break;
     }
+
+    // Free payload memory
+    free(payload);
 
     // Create response message
     length = create_message( (void *) &response_message, response_type, NULL, response_value, response_size, &id);
