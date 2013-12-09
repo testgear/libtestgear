@@ -10,11 +10,14 @@
 #define TIMEOUT 1000 // ms
 
 #define TG_SERVER "127.0.0.1"
+//#define TG_SERVER "192.168.93.24"
 
 // Active tests
-//#define FB_TEST
-#define SHELL_TEST
-#define AUDIO_TEST
+#define FB_TEST
+//#define FB_DELAY 250000 // ms
+#define FB_DELAY 0 // ms
+//#define SHELL_TEST
+//#define AUDIO_TEST
 
 void error(char *msg)
 {
@@ -28,7 +31,7 @@ int main(void)
     int status;
     int ret;
     char description[256];
-    int loop=10000;
+    int loop=1000;
 
     // Connect to test gear device server
     cd = tg_connect(TG_SERVER);
@@ -37,6 +40,7 @@ int main(void)
 
     while (loop--)
     {
+        printf("LOOP=%d\n", loop);
 #ifdef FB_TEST
 
         // Framebuffer plugin parameters
@@ -54,7 +58,7 @@ int main(void)
 
         // Load framebuffer plugin
         status = tg_plugin_load(cd, "fb");
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
 
@@ -74,119 +78,120 @@ int main(void)
 
         // Query plugin descriptions
         status = tg_describe(cd, "fb", (char *) &description);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
         printf("Description of fb: %s\n", description);
 
         status = tg_describe(cd, "fb.set_resolution", (char *) &description);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
         printf("Description of fb.set_resolution: %s\n", description);
 
 
         // Query various plugin variables
         status = tg_get_string(cd, "fb.filename", (char *) &fb.filename);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
         printf("fb.filename: %s\n", fb.filename);
 
         status = tg_get_int(cd, "fb.xres", &fb.xres);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
         printf("fb.xres: %d\n", fb.xres);
 
+        status = tg_get_int(cd, "fb.yres", &fb.yres);
+        if (status != 0)
+            error(tg_error);
+        printf("fb.xres: %d\n", fb.yres);
 
-        // Set various framebuffer parameters
+
+        // Configure framebuffer device
         status = tg_set_string(cd, "fb.device", "/dev/fb0");
-        if (status < 0)
+        if (status != 0)
+            error(tg_error);
+
+        status = tg_set_int(cd, "fb.depth", 32);
+        if (status != 0)
+            error(tg_error);
+
+        status = tg_run(cd, "fb.set_depth", &ret);
+        if (status != 0)
             error(tg_error);
 
         status = tg_set_int(cd, "fb.xres", 1024);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
         status = tg_set_int(cd, "fb.yres", 768);
-        if (status < 0)
-            error(tg_error);
-
-        status = tg_set_int(cd, "fb.pattern", 1);
-        if (status < 0)
-            error(tg_error);
-
-        status = tg_set_string(cd, "fb.filename", "test.bmp");
-        if (status < 0)
-            error(tg_error);
-
-
-        // Query various plugin variables
-        status = tg_get_string(cd, "fb.filename", (char *) &fb.filename);
-        if (status < 0)
-            error(tg_error);
-        printf("fb.filename: %s\n", fb.filename);
-
-        status = tg_get_int(cd, "fb.xres", &fb.xres);
-        if (status < 0)
-            error(tg_error);
-        printf("fb.xres: %d\n", fb.xres);
-
-
-        // Run command
-        status = tg_run(cd, "fb.open", &ret);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
         status = tg_run(cd, "fb.set_resolution", &ret);
-        if (status < 0)
+        if (status != 0)
+            error(tg_error);
+
+
+        // Draw patterns
+        status = tg_run(cd, "fb.draw_pattern", &ret);
+        if (status != 0)
+            error(tg_error);
+
+        usleep(FB_DELAY);
+
+        status = tg_set_int(cd, "fb.pattern", 1);
+        if (status != 0)
             error(tg_error);
 
         status = tg_run(cd, "fb.draw_pattern", &ret);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
-        sleep(3);
+        usleep(FB_DELAY);
 
         status = tg_set_int(cd, "fb.pattern", 2);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
         status = tg_run(cd, "fb.draw_pattern", &ret);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
-        sleep(3);
+        usleep(FB_DELAY);
 
         status = tg_set_int(cd, "fb.pattern", 3);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
         status = tg_run(cd, "fb.draw_pattern", &ret);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
-        sleep(3);
+        usleep(FB_DELAY);
 
         status = tg_set_int(cd, "fb.pattern", 4);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
         status = tg_run(cd, "fb.draw_pattern", &ret);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
-        sleep(3);
+        usleep(FB_DELAY);
 
-        status = tg_set_int(cd, "fb.pattern", 0);
-        if (status < 0)
+        // Draw image
+        status = tg_set_string(cd, "fb.filename", "test.bmp");
+        if (status != 0)
             error(tg_error);
-
-        status = tg_run(cd, "fb.draw_pattern", &ret);
-        if (status < 0)
+/*
+        status = tg_run(cd, "fb.show_image", &ret);
+        if (status != 0)
             error(tg_error);
+*/
 
 
         // Unload framebuffer plugin
         status = tg_plugin_unload(cd, "fb");
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
 #endif // FB_TEST
@@ -203,25 +208,25 @@ int main(void)
 
         // Load shell plugin
         status = tg_plugin_load(cd, "shell");
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
 
         // Set shell command string
         status = tg_set_string(cd, "shell.command", "touch bla.txt; exit 42");
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
         // Run shell command
         status = tg_run(cd, "shell.command", &ret);
         printf("Command returned code %d\n", ret);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
 
         // Unload shell plugin
         status = tg_plugin_unload(cd, "shell");
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
 #endif // SHELL_TEST
@@ -231,84 +236,84 @@ int main(void)
 
         // Load audio plugin
         status = tg_plugin_load(cd, "audio");
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
 
         // Set audio device
         status = tg_set_string(cd, "audio.device", "default");
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
         // Set audio device sampling rate
         status = tg_set_int(cd, "audio.rate", 44100);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
         // Set tone type
         status = tg_set_string(cd, "audio.tone-type", "sine");
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
         // Set tone frequency
         status = tg_set_int(cd, "audio.tone-frequency", 200);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
         // Set tone time
         status = tg_set_int(cd, "audio.tone-time", 1);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
         // Run tone generator command
         status = tg_run(cd, "audio.generate-tone", &ret);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
         // Set tone frequency
         status = tg_set_int(cd, "audio.tone-frequency", 400);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
         // Run tone generator command
         status = tg_run(cd, "audio.generate-tone", &ret);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
         // Set tone frequency
         status = tg_set_int(cd, "audio.tone-frequency", 800);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
         // Run tone generator command
         status = tg_run(cd, "audio.generate-tone", &ret);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
         // Set tone frequency
         status = tg_set_int(cd, "audio.tone-frequency", 1600);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
         // Run tone generator command
         status = tg_run(cd, "audio.generate-tone", &ret);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
         // Set tone type
         status = tg_set_string(cd, "audio.tone-type", "noise");
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
         // Run tone generator command
         status = tg_run(cd, "audio.generate-tone", &ret);
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
 
         // Unload audio plugin
         status = tg_plugin_unload(cd, "audio");
-        if (status < 0)
+        if (status != 0)
             error(tg_error);
 
 #endif // AUDIO_TEST
