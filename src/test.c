@@ -8,16 +8,15 @@
 #include "testgear/testgear.h"
 
 #define TIMEOUT 1000 // ms
+#define LOOPS 1000
 
-#define TG_SERVER "127.0.0.1"
-//#define TG_SERVER "192.168.93.24"
-
-// Active tests
+// Available tests
 #define FB_TEST
-//#define FB_DELAY 250000 // ms
-#define FB_DELAY 0 // ms
-//#define SHELL_TEST
-//#define AUDIO_TEST
+#define SHELL_TEST
+#define AUDIO_TEST
+
+// Test specific settings
+#define FB_DELAY 1000000 // ms
 
 void error(char *msg)
 {
@@ -25,16 +24,22 @@ void error(char *msg)
     exit(-1);
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
     int cd;
     int status;
     int ret;
     char description[256];
-    int loop=1000;
+    int loop=LOOPS;
+
+    if (argc != 2)
+    {
+        printf("Usage: %s <ip>\n", argv[0]);
+        exit(1);
+    }
 
     // Connect to test gear device server
-    cd = tg_connect(TG_SERVER);
+    cd = tg_connect(argv[1]);
     if (cd < 0)
         error(tg_error);
 
@@ -249,6 +254,47 @@ int main(void)
         status = tg_set_int(cd, "audio.rate", 44100);
         if (status != 0)
             error(tg_error);
+
+        // Set wav test file
+        status = tg_set_string(cd, "audio.wav-file", "arriva.wav");
+        if (status != 0)
+            error(tg_error);
+
+        // Run play wav command
+        status = tg_run(cd, "audio.play-wav", &ret);
+        if (status != 0)
+            error(tg_error);
+
+        // Set wav test file
+        status = tg_set_string(cd, "audio.wav-file", "11k16bitpcm.wav");
+        if (status != 0)
+            error(tg_error);
+
+        // Run play wav command
+        status = tg_run(cd, "audio.play-wav", &ret);
+        if (status != 0)
+            error(tg_error);
+
+        // Set wav test file
+        status = tg_set_string(cd, "audio.wav-file", "11k8bitpcm.wav");
+        if (status != 0)
+            error(tg_error);
+
+        // Run play wav command
+        status = tg_run(cd, "audio.play-wav", &ret);
+        if (status != 0)
+            error(tg_error);
+
+        // Set wav test file
+        status = tg_set_string(cd, "audio.wav-file", "santa.wav");
+        if (status != 0)
+            error(tg_error);
+
+        // Run play wav command
+        status = tg_run(cd, "audio.play-wav", &ret);
+        if (status != 0)
+            error(tg_error);
+
 
         // Set tone type
         status = tg_set_string(cd, "audio.tone-type", "sine");
