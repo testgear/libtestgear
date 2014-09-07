@@ -55,7 +55,7 @@ enum msg_type_t
 
 int send_message(int handle,
                  int type,
-                 char *name,
+                 const char *name,
                  void *get_value,
                  void *set_value,
                  int set_value_size,

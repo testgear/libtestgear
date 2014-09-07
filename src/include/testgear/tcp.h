@@ -31,7 +31,7 @@
 #ifndef TCP_H
 #define TCP_H
 
-int tcp_connect(char *hostname);
+int tcp_connect(const char *hostname);
 int tcp_disconnect(void);
 int tcp_write(void *buffer, int length);
 int tcp_read(void *buffer, int length);

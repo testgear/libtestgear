@@ -153,7 +153,7 @@ static int value_size(int command)
 
 static int create_message(void **msg_buffer,
                    char type,
-                   char *name,
+                   const char *name,
                    void *value,
                    int value_length,
                    unsigned int *id)
@@ -403,7 +403,7 @@ static char *message_type(type)
 #ifndef SERVER
 int send_message(int handle,
                  int type,
-                 char *name,
+                 const char *name,
                  void *get_value,
                  void *set_value,
                  int set_value_size,

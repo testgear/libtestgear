@@ -42,7 +42,7 @@
 char *tg_error;
 
 // Connection management functions
-int tg_connect(char *name)
+int tg_connect(const char *name)
 {
     debug_printf("libtestgear v%s\n", VERSION);
     debug_printf("\n");
@@ -57,75 +57,75 @@ int tg_disconnect(int handle)
 }
 
 // Plugin managment functions
-int tg_plugin_load(int handle, char *name)
+int tg_plugin_load(int handle, const char *name)
 {
     return send_message(handle, PLUGIN_LOAD, name, NULL, NULL, 0,TIMEOUT);
 }
 
-int tg_plugin_unload(int handle, char *name)
+int tg_plugin_unload(int handle, const char *name)
 {
     return send_message(handle, PLUGIN_UNLOAD, name, NULL, NULL, 0, TIMEOUT);
 }
 
 // Variable management functions
-int tg_get_char(int handle, char *name, char *value)
+int tg_get_char(int handle, const char *name, char *value)
 {
     return send_message(handle, GET_CHAR, name, (void *) value, NULL, 0, TIMEOUT);
 }
 
-int tg_get_short(int handle, char *name, short *value)
+int tg_get_short(int handle, const char *name, short *value)
 {
     return send_message(handle, GET_SHORT, name, (void *) value, NULL, 0, TIMEOUT);
 }
 
-int tg_get_int(int handle, char *name, int *value)
+int tg_get_int(int handle, const char *name, int *value)
 {
     return send_message(handle, GET_INT, name, (void *) value, NULL, 0, TIMEOUT);
 }
 
-int tg_get_float(int handle, char *name, float *value)
+int tg_get_float(int handle, const char *name, float *value)
 {
     return send_message(handle, GET_FLOAT, name, (void *) value, NULL, 0, TIMEOUT);
 }
 
-int tg_get_string(int handle, char *name, char *string)
+int tg_get_string(int handle, const char *name, char *string)
 {
     return send_message(handle, GET_STRING, name, (void *) string, NULL, 0, TIMEOUT);
 }
 
-int tg_set_char(int handle, char *name, char value)
+int tg_set_char(int handle, const char *name, char value)
 {
     return send_message(handle, SET_CHAR, name, NULL, (void *) &value, sizeof(char), TIMEOUT);
 }
 
-int tg_set_short(int handle, char *name, short value)
+int tg_set_short(int handle, const char *name, short value)
 {
     return send_message(handle, SET_SHORT, name, NULL, (void *) &value, sizeof(short), TIMEOUT);
 }
 
-int tg_set_int(int handle, char *name, int value)
+int tg_set_int(int handle, const char *name, int value)
 {
     return send_message(handle, SET_INT, name, NULL, (void *) &value, sizeof(int), TIMEOUT);
 }
 
-int tg_set_float(int handle, char *name, float value)
+int tg_set_float(int handle, const char *name, float value)
 {
     return send_message(handle, SET_FLOAT, name, NULL, (void *) &value, sizeof(float), TIMEOUT);
 }
 
-int tg_set_string(int handle, char *name, char *string)
+int tg_set_string(int handle, const char *name, char *string)
 {
     return send_message(handle, SET_STRING, name, NULL, (void *) string, strlen(string)+1, TIMEOUT);
 }
 
 // Command management function
-int tg_run(int handle, char *name, int *return_value)
+int tg_run(int handle, const char *name, int *return_value)
 {
     return send_message(handle, RUN, name, (void *) return_value, NULL, 0, TIMEOUT);
 }
 
 // Description function
-int tg_describe(int handle, char *name, char *string)
+int tg_describe(int handle, const char *name, char *string)
 {
     return send_message(handle, DESCRIBE, name, (void *) string, NULL, 0, TIMEOUT);
 }

@@ -44,7 +44,7 @@
 
 int server_socket;
 
-int tcp_connect(char *hostname)
+int tcp_connect(const char *hostname)
 {
     struct sockaddr_in server_address;
     struct hostent *host;
@@ -100,10 +100,7 @@ int tcp_disconnect(void)
 void tcp_dump_data(void *data, int length)
 {
     int i;
-    char *bufferp;
     
-    bufferp = data;
-
     for (i=0; i<length; i++)
     {
         if ((i%10 == 0) && (i !=0 ))
@@ -111,7 +108,7 @@ void tcp_dump_data(void *data, int length)
             debug_printf_raw("\n");
             debug_printf("%32s"," ");
         }
-        debug_printf_raw("0x%02x ", (unsigned char) bufferp[i]);
+        debug_printf_raw("0x%02x ", ((unsigned char *)data)[i]);
     }
 }
 

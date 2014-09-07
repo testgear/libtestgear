@@ -8,12 +8,12 @@
 #include "testgear/testgear.h"
 
 #define TIMEOUT 1000 // ms
-#define LOOPS 1000
+#define LOOPS 1
 
 // Available tests
-#define FB_TEST
+//#define FB_TEST
 #define SHELL_TEST
-#define AUDIO_TEST
+//#define AUDIO_TEST
 
 // Test specific settings
 #define FB_DELAY 1000000 // ms

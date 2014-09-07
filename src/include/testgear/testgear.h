@@ -36,31 +36,31 @@
  */
 
 // Connection management functions
-int tg_connect(char *name);
+int tg_connect(const char *name);
 int tg_disconnect(int handle);
 
 // Plugin managment functions
-int tg_plugin_load(int handle, char *name);
-int tg_plugin_unload(int handle, char *name);
+int tg_plugin_load(int handle, const char *name);
+int tg_plugin_unload(int handle, const char *name);
 
 // Variable management functions
-int tg_get_char(int handle, char *name, char *value);
-int tg_get_short(int handle, char *name, short *value);
-int tg_get_int(int handle, char *name, int *value);
-int tg_get_float(int handle, char *name, float *value);
-int tg_get_string(int handle, char *name, char *string);
+int tg_get_char(int handle, const char *name, char *value);
+int tg_get_short(int handle, const char *name, short *value);
+int tg_get_int(int handle, const char *name, int *value);
+int tg_get_float(int handle, const char *name, float *value);
+int tg_get_string(int handle, const char *name, char *string);
 
-int tg_set_char(int handle, char *name, char value);
-int tg_set_short(int handle, char *name, short value);
-int tg_set_int(int handle, char *name, int value);
-int tg_set_float(int handle, char *name, float value);
-int tg_set_string(int handle, char *name, char *string);
+int tg_set_char(int handle, const char *name, char value);
+int tg_set_short(int handle, const char *name, short value);
+int tg_set_int(int handle, const char *name, int value);
+int tg_set_float(int handle, const char *name, float value);
+int tg_set_string(int handle, const char *name, char *string);
 
 // Run command function
-int tg_run(int handle, char *name, int *return_value);
+int tg_run(int handle, const char *name, int *return_value);
 
 // Descriptive function
-int tg_describe(int handle, char *name, char *string);
+int tg_describe(int handle, const char *name, char *string);
 
 // Error message holder
 extern char *tg_error;
