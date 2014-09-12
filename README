@@ -6,8 +6,8 @@
 
     This is the Test Gear client library which offers an API for communicating
     with Test Gear device servers. The API allows client applications to
-    connect, load plugins, query/manage variables, run commands, and finally
-    disconnect from Test Gear device servers.
+    connect/disconnect, load/unload plugins, query/manage variables
+    (parameters), and run commands (functions).
 
     It is part of the Test Gear project which aims to create a simple hardware
     test framework for use with any type of GNU/Linux based system.
@@ -18,6 +18,7 @@
     The code is currently considered highly experimental. API and internals are
     subject to change. Use on your own risk. For now, consider it a playground
     for experiments.
+
 
 3. Development
 
