@@ -2,7 +2,7 @@
 # libtestgear - Test Gear client library
 #
 
-VERSION=0.1alpha
+VERSION=0.2alpha
 
 CC=gcc
 AR=ar
