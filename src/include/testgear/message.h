@@ -33,8 +33,10 @@
 
 enum msg_type_t
 {
+    LIST_PLUGINS,
     PLUGIN_LOAD,
     PLUGIN_UNLOAD,
+    PLUGIN_LIST_PROPERTIES,
     GET_CHAR,
     SET_CHAR,
     GET_SHORT,
@@ -53,7 +55,7 @@ enum msg_type_t
     RSP_ERROR,
 };
 
-int send_message(int handle,
+int submit_message(int handle,
                  int type,
                  const char *name,
                  void *get_value,

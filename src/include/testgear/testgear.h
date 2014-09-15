@@ -40,8 +40,10 @@ int tg_connect(const char *name);
 int tg_disconnect(int handle);
 
 // Plugin managment functions
+int tg_list_plugins(int handle, char *list);
 int tg_plugin_load(int handle, const char *name);
 int tg_plugin_unload(int handle, const char *name);
+int tg_plugin_list_properties(int handle, const char *name, char *properties);
 
 // Variable management functions
 int tg_get_char(int handle, const char *name, char *value);

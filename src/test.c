@@ -29,7 +29,8 @@ int main(int argc, char *argv[])
     int cd;
     int status;
     int ret;
-    char description[256];
+    char description[256] = "";
+    char plugins[256] = "";
     int loop=LOOPS;
 
     if (argc != 2)
@@ -42,6 +43,10 @@ int main(int argc, char *argv[])
     cd = tg_connect(argv[1]);
     if (cd < 0)
         error(tg_error);
+
+    // List available plugins
+    tg_list_plugins(cd, (char *) &plugins);
+    printf("Available plugins: %s\n", plugins);
 
     while (loop--)
     {
@@ -210,12 +215,19 @@ int main(int argc, char *argv[])
             char command[256];
         } shell;
 
+        char properties[1024] = "";
 
         // Load shell plugin
         status = tg_plugin_load(cd, "shell");
         if (status != 0)
             error(tg_error);
 
+
+        // List properties
+        status = tg_plugin_list_properties(cd, "shell", (char *) &properties);
+        if (status != 0)
+            error(tg_error);
+        printf("properties: %s\n", properties);
 
         // Set shell command string
         status = tg_set_string(cd, "shell.command", "touch bla.txt; exit 42");
