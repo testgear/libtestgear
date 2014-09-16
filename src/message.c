@@ -756,7 +756,7 @@ int handle_incoming_message(int server_socket)
             else
             {
                 response_type = RSP_ERROR;
-                sprintf(response_value, "Variable %s of char type not found", name);
+                sprintf(response_value, "Variable %s of short type not found", name);
                 response_size = strlen(response_value) + 1;
             }
             break;
@@ -780,7 +780,7 @@ int handle_incoming_message(int server_socket)
             else
             {
                 response_type = RSP_ERROR;
-                sprintf(response_value, "Variable %s of int type not found", name);
+                sprintf(response_value, "Variable %s of float type not found", name);
                 response_size = strlen(response_value) + 1;
             }
             break;
