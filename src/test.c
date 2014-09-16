@@ -11,8 +11,9 @@
 #define LOOPS 1
 
 // Available tests
+#define DUMMY_TEST
 //#define FB_TEST
-#define SHELL_TEST
+//#define SHELL_TEST
 //#define AUDIO_TEST
 
 // Test specific settings
@@ -51,6 +52,109 @@ int main(int argc, char *argv[])
     while (loop--)
     {
         printf("LOOP=%d\n", loop);
+#ifdef DUMMY_TEST
+
+        // Dummy plugin parameters
+        struct
+        {
+            char char0;
+            short short0;
+            int int0;
+            float float0;
+            char string0[256];
+        } dummy;
+
+        char properties[1024] = "";
+
+        // Load dummy plugin
+        status = tg_plugin_load(cd, "dummy");
+        if (status != 0)
+            error(tg_error);
+
+
+        // List properties
+        status = tg_plugin_list_properties(cd, "dummy", (char *) &properties);
+        if (status != 0)
+            error(tg_error);
+        printf("dummy properties: %s\n", properties);
+
+        // Set dummy char
+        status = tg_set_char(cd, "dummy.char0", 42);
+        if (status != 0)
+            error(tg_error);
+
+        // Get dummy char
+        status = tg_get_char(cd, "dummy.char0", &dummy.char0);
+        if (status != 0)
+            error(tg_error);
+        else
+            printf("dummy.char0 = %d\n", dummy.char0);
+
+        // Set dummy short
+        status = tg_set_short(cd, "dummy.short0", 4242);
+        if (status != 0)
+            error(tg_error);
+
+        // Get dummy short
+        status = tg_get_short(cd, "dummy.short0", &dummy.short0);
+        if (status != 0)
+            error(tg_error);
+        else
+            printf("dummy.short0 = %d\n", dummy.short0);
+
+        // Set dummy int
+        status = tg_set_int(cd, "dummy.int0", 424242);
+        if (status != 0)
+            error(tg_error);
+
+        // Get dummy int
+        status = tg_get_int(cd, "dummy.int0", &dummy.int0);
+        if (status != 0)
+            error(tg_error);
+        else
+            printf("dummy.int0 = %d\n", dummy.int0);
+
+        // Set dummy float
+        status = tg_set_float(cd, "dummy.float0", 42.42);
+        if (status != 0)
+            error(tg_error);
+
+        // Get dummy float
+        status = tg_get_float(cd, "dummy.float0", &dummy.float0);
+        if (status != 0)
+            error(tg_error);
+        else
+            printf("dummy.float0 = %f\n", dummy.float0);
+
+        // Set dummy string
+        status = tg_set_string(cd, "dummy.string0", "Hello world!");
+        if (status != 0)
+            error(tg_error);
+
+        // Get dummy string
+        status = tg_get_string(cd, "dummy.string0", (char *) &dummy.string0);
+        if (status != 0)
+            error(tg_error);
+        else
+            printf("dummy.string0 = %s\n", dummy.string0);
+
+        // Run dummy command
+        status = tg_run(cd, "dummy.command0", &ret);
+        if (status != 0)
+            error(tg_error);
+        else
+            printf("command0() returned %d\n", ret);
+
+
+        // Unload dummy plugin
+        status = tg_plugin_unload(cd, "dummy");
+        if (status != 0)
+            error(tg_error);
+
+#endif // SHELL_TEST
+
+
+
 #ifdef FB_TEST
 
         // Framebuffer plugin parameters
