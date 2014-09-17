@@ -60,7 +60,9 @@ int main(int argc, char *argv[])
             char char0;
             short short0;
             int int0;
+            long long0;
             float float0;
+            double double0;
             char string0[256];
         } dummy;
 
@@ -103,7 +105,7 @@ int main(int argc, char *argv[])
             printf("dummy.short0 = %d\n", dummy.short0);
 
         // Set dummy int
-        status = tg_set_int(cd, "dummy.int0", 424242);
+        status = tg_set_int(cd, "dummy.int0", 42424242);
         if (status != 0)
             error(tg_error);
 
@@ -114,8 +116,20 @@ int main(int argc, char *argv[])
         else
             printf("dummy.int0 = %d\n", dummy.int0);
 
+        // Set dummy long
+        status = tg_set_long(cd, "dummy.long0", 424242424242);
+        if (status != 0)
+            error(tg_error);
+
+        // Get dummy long
+        status = tg_get_long(cd, "dummy.long0", &dummy.long0);
+        if (status != 0)
+            error(tg_error);
+        else
+            printf("dummy.long0 = %ld\n", dummy.long0);
+
         // Set dummy float
-        status = tg_set_float(cd, "dummy.float0", 42.42);
+        status = tg_set_float(cd, "dummy.float0", 42.424242);
         if (status != 0)
             error(tg_error);
 
@@ -124,7 +138,19 @@ int main(int argc, char *argv[])
         if (status != 0)
             error(tg_error);
         else
-            printf("dummy.float0 = %f\n", dummy.float0);
+            printf("dummy.float0 = %.7f\n", dummy.float0);
+
+        // Set dummy double
+        status = tg_set_double(cd, "dummy.double0", 42.4242424242);
+        if (status != 0)
+            error(tg_error);
+
+        // Get dummy double
+        status = tg_get_double(cd, "dummy.double0", &dummy.double0);
+        if (status != 0)
+            error(tg_error);
+        else
+            printf("dummy.double0 = %.10f\n", dummy.double0);
 
         // Set dummy string
         status = tg_set_string(cd, "dummy.string0", "Hello world!");

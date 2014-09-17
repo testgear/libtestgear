@@ -49,13 +49,17 @@ int tg_plugin_list_properties(int handle, const char *name, char *properties);
 int tg_get_char(int handle, const char *name, char *value);
 int tg_get_short(int handle, const char *name, short *value);
 int tg_get_int(int handle, const char *name, int *value);
+int tg_get_long(int handle, const char *name, long *value);
 int tg_get_float(int handle, const char *name, float *value);
+int tg_get_double(int handle, const char *name, double *value);
 int tg_get_string(int handle, const char *name, char *string);
 
 int tg_set_char(int handle, const char *name, char value);
 int tg_set_short(int handle, const char *name, short value);
 int tg_set_int(int handle, const char *name, int value);
+int tg_set_long(int handle, const char *name, long value);
 int tg_set_float(int handle, const char *name, float value);
+int tg_set_double(int handle, const char *name, double value);
 int tg_set_string(int handle, const char *name, char *string);
 
 // Run command function

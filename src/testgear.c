@@ -93,9 +93,19 @@ int tg_get_int(int handle, const char *name, int *value)
     return submit_message(handle, GET_INT, name, (void *) value, NULL, 0, TIMEOUT);
 }
 
+int tg_get_long(int handle, const char *name, long *value)
+{
+    return submit_message(handle, GET_LONG, name, (void *) value, NULL, 0, TIMEOUT);
+}
+
 int tg_get_float(int handle, const char *name, float *value)
 {
     return submit_message(handle, GET_FLOAT, name, (void *) value, NULL, 0, TIMEOUT);
+}
+
+int tg_get_double(int handle, const char *name, double *value)
+{
+    return submit_message(handle, GET_DOUBLE, name, (void *) value, NULL, 0, TIMEOUT);
 }
 
 int tg_get_string(int handle, const char *name, char *string)
@@ -118,9 +128,19 @@ int tg_set_int(int handle, const char *name, int value)
     return submit_message(handle, SET_INT, name, NULL, (void *) &value, sizeof(int), TIMEOUT);
 }
 
+int tg_set_long(int handle, const char *name, long value)
+{
+    return submit_message(handle, SET_LONG, name, NULL, (void *) &value, sizeof(long), TIMEOUT);
+}
+
 int tg_set_float(int handle, const char *name, float value)
 {
     return submit_message(handle, SET_FLOAT, name, NULL, (void *) &value, sizeof(float), TIMEOUT);
+}
+
+int tg_set_double(int handle, const char *name, double value)
+{
+    return submit_message(handle, SET_DOUBLE, name, NULL, (void *) &value, sizeof(double), TIMEOUT);
 }
 
 int tg_set_string(int handle, const char *name, char *string)
