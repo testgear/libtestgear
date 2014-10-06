@@ -34,26 +34,72 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "testgear/config.h"
 #include "testgear/debug.h"
 #include "testgear/message.h"
 #include "testgear/tcp.h"
 
 char *tg_error;
+struct message_io_t io;
 
 // Connection management functions
-int tg_connect(const char *name)
+int tg_connect(char *name)
 {
+    char *hostname;
+    char *ip, *port;
+    int tcp_port;
+
+    hostname = strdup(name);
+
     debug_printf("libtestgear v%s\n", VERSION);
     debug_printf("\n");
     debug_printf("Connecting to %s\n", name);
 
-    return tcp_connect(name);
+    // Decode connection string
+    if (strncmp(hostname, "tcp://", 6) == 0)
+    {
+        // Decode IP address
+        ip = strtok(&hostname[6], ":");
+        if (ip == NULL)
+        {
+            tg_error = strdup("Invalid IP address");
+            return -1;
+        }
+
+        // Decode port
+        port = strtok(NULL, ":");
+        if (port != NULL)
+            tcp_port = atoi(port);
+        else
+            tcp_port = 8000;
+
+        // Register tcp I/O functions
+        io.write = &tcp_write;
+        io.read = &tcp_read;
+        io.close = &tcp_close;
+        message_register_io(&io);
+    } else if (strncmp(hostname, "serial://", 9) == 0)
+    {
+        // strcpy(device, &name[9]);
+        // Decode device
+        // Register serial write/read
+    } else if (strncmp(hostname, "usb://", 6) == 0)
+    {
+        // Decode vendor ID
+        // Decode product ID
+    } else
+    {
+        tg_error = strdup("Invalid connection string");
+        return -1;
+    }
+
+    return tcp_connect(ip, tcp_port);
 }
 
 int tg_disconnect(int handle)
 {
-    return tcp_disconnect();
+    return io.close();
 }
 
 // Plugin managment functions

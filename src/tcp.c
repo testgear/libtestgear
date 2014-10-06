@@ -44,7 +44,7 @@
 
 int server_socket;
 
-int tcp_connect(const char *hostname)
+int tcp_connect(const char *hostname, int port)
 {
     struct sockaddr_in server_address;
     struct hostent *host;
@@ -59,7 +59,7 @@ int tcp_connect(const char *hostname)
     // Construct the server address structure
     memset(&server_address, 0, sizeof(server_address));
     server_address.sin_family      = AF_INET;
-    server_address.sin_port        = htons(SERVER_PORT);
+    server_address.sin_port        = htons(port);
     server_address.sin_addr.s_addr = inet_addr(hostname);
 
     if (server_address.sin_addr.s_addr == (unsigned long) INADDR_NONE)
@@ -91,7 +91,7 @@ int tcp_connect(const char *hostname)
     return 0;
 }
 
-int tcp_disconnect(void)
+int tcp_close(void)
 {
     close(server_socket);
     return 0;
