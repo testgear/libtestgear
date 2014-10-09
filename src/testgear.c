@@ -102,7 +102,7 @@ int tg_connect(char *name)
         ip = strtok(&connection_string[6], ":");
         if (ip == NULL)
         {
-            tg_error = strdup("Invalid IP address");
+            tg_error = "Invalid IP address";
             goto error;
         }
 
@@ -134,7 +134,7 @@ int tg_connect(char *name)
         // Register USB I/O functions
     } else
     {
-        tg_error = strdup("Invalid connection string");
+        tg_error = "Invalid connection string";
         return -1;
     }
 
