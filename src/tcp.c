@@ -41,16 +41,18 @@
 #include "testgear/config.h"
 #include "testgear/tcp.h"
 #include "testgear/debug.h"
+#include "testgear/session.h"
 
-int server_socket;
-
-int tcp_connect(const char *hostname, int port)
+int tcp_connect(int handle, const char *hostname, int port)
 {
     struct sockaddr_in server_address;
     struct hostent *host;
+    struct tcp_data_t *tcp_data;
+
+    tcp_data = malloc(sizeof(tcp_data));
 
     // Create a reliable stream socket using TCP/IP
-    if ((server_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
+    if ((tcp_data->server_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
     {
         perror("Error: socket() call failed");
         exit(-1);
@@ -71,7 +73,7 @@ int tcp_connect(const char *hostname, int port)
         {
             perror("Error: Host not found");
             printf("h_errno = %d\n", h_errno);
-            close(server_socket);
+            close(tcp_data->server_socket);
             exit(-1);
         }
 
@@ -79,21 +81,26 @@ int tcp_connect(const char *hostname, int port)
     }
 
     // Establish connection to the server
-    if (connect(server_socket, (struct sockaddr *) &server_address, sizeof(server_address)) < 0)
+    if (connect(tcp_data->server_socket, (struct sockaddr *) &server_address, sizeof(server_address)) < 0)
     {
         perror("Error: connect() call failed");
-        close(server_socket);
+        close(tcp_data->server_socket);
         exit(-1);
     }
     else
         debug_printf("Connection established successfully\n");
 
+    session[handle].data = tcp_data;
+
     return 0;
 }
 
-int tcp_close(void)
+int tcp_close(int handle)
 {
-    close(server_socket);
+    struct tcp_data_t *tcp_data;
+
+    tcp_data = session[handle].data;
+    close(tcp_data->server_socket);
     return 0;
 }
 
@@ -112,22 +119,29 @@ void tcp_dump_data(void *data, int length)
     }
 }
 
-int tcp_write(void *buffer, int length)
+int tcp_write(int handle, void *buffer, int length)
 {
+    struct tcp_data_t *tcp_data;
+
+    tcp_data = session[handle].data;
+
     // Debug
     debug_printf("Sending TCP data (%4d bytes):  ", length);
     tcp_dump_data(buffer, length);
     debug_printf_raw("\n");
 
     // FIXME: introduce timeout handling
-    return write(server_socket, buffer, length);
+    return write(tcp_data->server_socket, buffer, length);
 }
 
-int tcp_read(void *buffer, int length)
+int tcp_read(int handle, void *buffer, int length)
 {
     int size;
+    struct tcp_data_t *tcp_data;
 
-    size = read(server_socket, buffer, length);
+    tcp_data = session[handle].data;
+
+    size = read(tcp_data->server_socket, buffer, length);
 
     // Debug
     if (size)

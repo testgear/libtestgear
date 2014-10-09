@@ -28,17 +28,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TCP_H
-#define TCP_H
+#ifndef SESSION_H
+#define SESSION_H
 
-int tcp_connect(int handle, const char *hostname, int port);
-int tcp_write(int handle, void *buffer, int length);
-int tcp_read(int handle, void *buffer, int length);
-int tcp_close(int handle);
+#include <stdbool.h>
+#include <pthread.h>
 
-struct tcp_data_t
+#define MAX_SESSIONS 50
+
+struct session_t
 {
-    int server_socket;
+    bool allocated;
+
+    int (*write)(int handle, void *buffer, int length);
+    int (*read)(int handle, void *buffer, int length);
+    int (*close)(int handle);
+
+    // Session data
+    void *data;
 };
+
+extern struct session_t session[MAX_SESSIONS];
+extern pthread_mutex_t session_mutex;
 
 #endif

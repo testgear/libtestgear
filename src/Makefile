@@ -16,7 +16,8 @@ debug: all
 
 objects = testgear.o \
           tcp.o \
-          message.o
+          message.o \
+          session.o
 
 $(objects): %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@

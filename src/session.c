@@ -28,17 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TCP_H
-#define TCP_H
+#include "testgear/session.h"
 
-int tcp_connect(int handle, const char *hostname, int port);
-int tcp_write(int handle, void *buffer, int length);
-int tcp_read(int handle, void *buffer, int length);
-int tcp_close(int handle);
-
-struct tcp_data_t
-{
-    int server_socket;
-};
-
-#endif
+struct session_t session[MAX_SESSIONS] = {};
+pthread_mutex_t session_mutex = PTHREAD_MUTEX_INITIALIZER;

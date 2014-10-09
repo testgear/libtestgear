@@ -39,32 +39,71 @@
 #include "testgear/debug.h"
 #include "testgear/message.h"
 #include "testgear/tcp.h"
+#include "testgear/session.h"
+
+#define SERVER_PORT 8000  // Default TCP server port
 
 char *tg_error;
-struct message_io_t io;
+
+void init(void)
+{
+    int i;
+
+    // Initialize session structures
+    for (i=0; i<MAX_SESSIONS; i++)
+    {
+        session[i].allocated = false;
+        session[i].read = NULL;
+        session[i].write = NULL;
+        session[i].close = NULL;
+    }
+}
 
 // Connection management functions
 int tg_connect(char *name)
 {
-    char *hostname;
+    bool session_available = false;
+    char *connection_string;
     char *ip, *port;
     int tcp_port;
+    int i;
 
-    hostname = strdup(name);
+    pthread_mutex_lock(&session_mutex);
+
+    // Find a free session entry (i)
+    for (i=0; i<MAX_SESSIONS; i++)
+    {
+        if (session[i].allocated == false)
+        {
+            session_available=true;
+            break;
+        }
+    }
+
+    // Return error if no session can be allocated
+    if (session_available == false)
+    {
+        printf("Error: Too many active sessions!\n");
+        goto error;
+    }
+
+    connection_string = strdup(name);
 
     debug_printf("libtestgear v%s\n", VERSION);
     debug_printf("\n");
     debug_printf("Connecting to %s\n", name);
 
     // Decode connection string
-    if (strncmp(hostname, "tcp://", 6) == 0)
+    if (strncmp(connection_string, "tcp://", 6) == 0)
     {
+        // TCP connection
+
         // Decode IP address
-        ip = strtok(&hostname[6], ":");
+        ip = strtok(&connection_string[6], ":");
         if (ip == NULL)
         {
             tg_error = strdup("Invalid IP address");
-            return -1;
+            goto error;
         }
 
         // Decode port
@@ -72,34 +111,55 @@ int tg_connect(char *name)
         if (port != NULL)
             tcp_port = atoi(port);
         else
-            tcp_port = 8000;
+            tcp_port = SERVER_PORT;
 
         // Register tcp I/O functions
-        io.write = &tcp_write;
-        io.read = &tcp_read;
-        io.close = &tcp_close;
-        message_register_io(&io);
-    } else if (strncmp(hostname, "serial://", 9) == 0)
+        session[i].write = &tcp_write;
+        session[i].read = &tcp_read;
+        session[i].close = &tcp_close;
+        if (tcp_connect(i, ip, tcp_port) < 0)
+            goto error;
+    } else if (strncmp(connection_string, "serial://", 9) == 0)
     {
-        // strcpy(device, &name[9]);
-        // Decode device
-        // Register serial write/read
-    } else if (strncmp(hostname, "usb://", 6) == 0)
+        // Serial connection
+
+        // Decode device name
+        // Register serial I/O function
+    } else if (strncmp(connection_string, "usb://", 6) == 0)
     {
+        // USB connection
+
         // Decode vendor ID
         // Decode product ID
+        // Register USB I/O functions
     } else
     {
         tg_error = strdup("Invalid connection string");
         return -1;
     }
 
-    return tcp_connect(ip, tcp_port);
+    free(connection_string);
+
+    // Claim session
+    session[i].allocated = true;
+
+    pthread_mutex_unlock(&session_mutex);
+
+    // Return session handle
+    return i;
+
+error:
+    pthread_mutex_unlock(&session_mutex);
+    return -1;
 }
 
 int tg_disconnect(int handle)
 {
-    return io.close();
+    pthread_mutex_lock(&session_mutex);
+    session[handle].allocated = false;
+    pthread_mutex_unlock(&session_mutex);
+
+    return session[handle].close(handle);
 }
 
 // Plugin managment functions
