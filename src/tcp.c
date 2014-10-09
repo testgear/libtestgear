@@ -42,6 +42,7 @@
 #include "testgear/tcp.h"
 #include "testgear/debug.h"
 #include "testgear/session.h"
+#include "testgear/testgear.h"
 
 int tcp_connect(int handle, const char *hostname, int port)
 {
@@ -54,8 +55,8 @@ int tcp_connect(int handle, const char *hostname, int port)
     // Create a reliable stream socket using TCP/IP
     if ((tcp_data->server_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
     {
-        perror("Error: socket() call failed");
-        exit(-1);
+        tg_error = "Error: socket() call failed";
+        return -1;
     }
 
     // Construct the server address structure
@@ -71,10 +72,9 @@ int tcp_connect(int handle, const char *hostname, int port)
 
         if(host == (struct hostent *) NULL)
         {
-            perror("Error: Host not found");
-            printf("h_errno = %d\n", h_errno);
+            tg_error = "Error: Host not found";
             close(tcp_data->server_socket);
-            exit(-1);
+            return -1;
         }
 
         memcpy(&server_address.sin_addr, host->h_addr, sizeof(server_address.sin_addr));
@@ -83,9 +83,9 @@ int tcp_connect(int handle, const char *hostname, int port)
     // Establish connection to the server
     if (connect(tcp_data->server_socket, (struct sockaddr *) &server_address, sizeof(server_address)) < 0)
     {
-        perror("Error: connect() call failed");
+        tg_error = "Error: connect() call failed";
         close(tcp_data->server_socket);
-        exit(-1);
+        return -1;
     }
     else
         debug_printf("Connection established successfully\n");
