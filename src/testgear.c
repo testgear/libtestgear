@@ -40,6 +40,7 @@
 #include "testgear/message.h"
 #include "testgear/tcp.h"
 #include "testgear/session.h"
+#include "config.h"
 
 #define SERVER_PORT 8000  // Default TCP server port
 
