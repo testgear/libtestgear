@@ -1,5 +1,5 @@
 AC_PREREQ([2.68])
-AC_INIT([libtestgear], [0.2], [], [libtestgear.so], [http://github.com/testgear/libtestgear])
+AC_INIT([libtestgear], [0.2], [], [libtestgear], [http://github.com/testgear/libtestgear])
 AC_CONFIG_HEADERS([src/include/config.h])
 AM_INIT_AUTOMAKE([1.11 foreign dist-xz no-dist-gzip -Wall -Werror])
 AM_SILENT_RULES([yes])
