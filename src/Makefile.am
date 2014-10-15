@@ -15,4 +15,4 @@ libtestgear_la_SOURCES = \
 
 libtestgear_la_CFLAGS = -I$(top_srcdir)/include
 
-libtestgear_la_LDFLAGS = -version-info $(LIBTESTGEAR_LT_VERSION)
+libtestgear_la_LDFLAGS = -version-info $(LIBTESTGEAR_LT_VERSION) -init,init
