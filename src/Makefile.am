@@ -1,7 +1,7 @@
 lib_LTLIBRARIES = libtestgear.la
 
-include_HEADERS = \
-    include/testgear/testgear.h
+libtestgeardir = $(includedir)/testgear
+libtestgear_HEADERS = include/testgear/testgear.h
 
 libtestgear_la_SOURCES = \
     message.c            \
