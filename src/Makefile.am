@@ -11,7 +11,9 @@ libtestgear_la_SOURCES = \
     include/testgear/message.h \
     include/testgear/session.h \
     include/testgear/tcp.h     \
-    include/testgear/testgear.h
+    include/testgear/testgear.h \
+    include/testgear/debug.h \
+    include/testgear/config.h
 
 libtestgear_la_CFLAGS = -I$(top_srcdir)/include
 
